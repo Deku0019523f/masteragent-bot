@@ -1,6 +1,6 @@
 """
 database/models.py
-SQL schema definitions for AfroCodeurs. Pure DDL — no logic here.
+SQL schema definitions for Master Agent. Pure DDL — no logic here.
 """
 
 SCHEMA_STATEMENTS: list[str] = [

@@ -15,7 +15,7 @@ import aiosqlite
 
 from database.models import INDEX_STATEMENTS, SCHEMA_STATEMENTS
 
-logger = logging.getLogger("afrocodeurs.database")
+logger = logging.getLogger("masteragent.database")
 
 
 class Database:
