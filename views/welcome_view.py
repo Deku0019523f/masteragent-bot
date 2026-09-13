@@ -12,7 +12,7 @@ import discord
 
 from utils import embeds
 
-logger = logging.getLogger("afrocodeurs.views.welcome")
+logger = logging.getLogger("masteragent.views.welcome")
 
 
 class RulesAcceptView(discord.ui.View):
@@ -26,7 +26,7 @@ class RulesAcceptView(discord.ui.View):
         label="J'accepte le règlement",
         style=discord.ButtonStyle.success,
         emoji="✅",
-        custom_id="afrocodeurs:accept_rules",
+        custom_id="masteragent:accept_rules",
     )
     async def accept_rules(self, interaction: discord.Interaction, button: discord.ui.Button):
         guild = interaction.guild

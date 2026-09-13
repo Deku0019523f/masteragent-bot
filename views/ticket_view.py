@@ -16,7 +16,7 @@ import discord
 
 from utils import embeds, permissions
 
-logger = logging.getLogger("afrocodeurs.views.ticket")
+logger = logging.getLogger("masteragent.views.ticket")
 
 TICKET_CATEGORIES = {
     "support": "🛠️ Support technique",
@@ -36,7 +36,7 @@ class TicketCategorySelect(discord.ui.Select):
         super().__init__(
             placeholder="Choisissez une catégorie...",
             options=options,
-            custom_id="afrocodeurs:ticket_category_select",
+            custom_id="masteragent:ticket_category_select",
             min_values=1,
             max_values=1,
         )
@@ -113,7 +113,7 @@ class TicketPanelView(discord.ui.View):
         label="Créer un ticket",
         style=discord.ButtonStyle.primary,
         emoji="🎫",
-        custom_id="afrocodeurs:create_ticket",
+        custom_id="masteragent:create_ticket",
     )
     async def create_ticket(self, interaction: discord.Interaction, button: discord.ui.Button):
         await interaction.response.send_message(
@@ -144,7 +144,7 @@ class TicketControlView(discord.ui.View):
         return any(r.id in staff_ids for r in member.roles)
 
     @discord.ui.button(label="Prendre en charge", style=discord.ButtonStyle.secondary, emoji="🙋",
-                        custom_id="afrocodeurs:ticket_claim")
+                        custom_id="masteragent:ticket_claim")
     async def claim(self, interaction: discord.Interaction, button: discord.ui.Button):
         if not await self._is_staff(interaction):
             return await interaction.response.send_message("❌ Réservé au staff.", ephemeral=True)
@@ -154,7 +154,7 @@ class TicketControlView(discord.ui.View):
         )
 
     @discord.ui.button(label="Fermer", style=discord.ButtonStyle.danger, emoji="🔒",
-                        custom_id="afrocodeurs:ticket_close")
+                        custom_id="masteragent:ticket_close")
     async def close(self, interaction: discord.Interaction, button: discord.ui.Button):
         if not await self._is_staff(interaction):
             return await interaction.response.send_message("❌ Réservé au staff.", ephemeral=True)
@@ -185,7 +185,7 @@ class TicketControlView(discord.ui.View):
             )
 
     @discord.ui.button(label="Supprimer", style=discord.ButtonStyle.secondary, emoji="🗑️",
-                        custom_id="afrocodeurs:ticket_delete")
+                        custom_id="masteragent:ticket_delete")
     async def delete(self, interaction: discord.Interaction, button: discord.ui.Button):
         if not await self._is_staff(interaction):
             return await interaction.response.send_message("❌ Réservé au staff.", ephemeral=True)
