@@ -84,14 +84,14 @@ async def test_resource_idempotency(db):
 @pytest.mark.asyncio
 async def test_profile_upsert(db):
     await db.ensure_guild(GUILD_ID)
-    await db.upsert_profile(GUILD_ID, USER_ID, domain="IA", bio="Passionné de vibe coding")
+    await db.upsert_profile(GUILD_ID, USER_ID, domain="IA", bio="Passionné d'automatisation IA")
     profile = await db.get_profile(GUILD_ID, USER_ID)
     assert profile["domain"] == "IA"
 
     await db.upsert_profile(GUILD_ID, USER_ID, domain="Backend")
     profile = await db.get_profile(GUILD_ID, USER_ID)
     assert profile["domain"] == "Backend"
-    assert profile["bio"] == "Passionné de vibe coding"  # untouched field preserved
+    assert profile["bio"] == "Passionné d'automatisation IA"  # untouched field preserved
 
 
 @pytest.mark.asyncio
