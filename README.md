@@ -1,10 +1,10 @@
-# AfroCodeurs — Bot Discord
+# Master Agent — Bot Discord Communauté
 
-Bot Discord professionnel pour la communauté **AfroCodeurs**, dédiée aux VibeCodeurs, développeurs, créateurs de projets numériques, étudiants, entrepreneurs tech, designers et makers.
+Bot Discord professionnel pour la communauté officielle **Master Agent**, la plateforme de création d'agents IA pour l'automatisation WhatsApp (service client, présentation produits, suivi des ventes). Ce serveur réunit les clients et utilisateurs de la plateforme : créateurs d'agents, entreprises qui automatisent leur WhatsApp, et curieux qui découvrent l'outil.
 
-Le bot installe et administre automatiquement la structure complète du serveur : rôles, catégories, salons, accueil, règlement, tickets, modération, projets et profils.
+Le bot installe et administre automatiquement la structure complète du serveur : rôles, catégories, salons, accueil, règlement, tickets, modération, présentation d'agents et profils.
 
-> ⚠️ Ce projet gère uniquement le bot Discord et la communauté. Aucune intégration web, aucune API, aucune synchronisation avec AfroCodeurs.org.
+> ⚠️ Ce projet gère uniquement le bot Discord et la communauté. Aucune intégration web, aucune API, aucune synchronisation avec l'application Master Agent elle-même.
 
 ---
 
@@ -34,31 +34,44 @@ Le bot installe et administre automatiquement la structure complète du serveur 
 - **Modération complète** : `/warn`, `/warnings`, `/clear`, `/timeout`, `/untimeout`, `/kick`, `/ban`, `/unban`, `/lock`, `/unlock`, avec seuils d'auto-sanction configurables.
 - **Gestion des rôles** sécurisée par hiérarchie (`/role add|remove|info|list`).
 - **Système de staff** : roster, promotions, historique (`/staff ...`).
-- **Tickets** : panneau à bouton, catégories, salons privés, prise en charge, fermeture, logs.
-- **Projets** : formulaire modal (`/projet`) générant un embed professionnel.
+- **Tickets** : panneau à bouton (support technique, collaboration, signalement, partenariat, autre), salons privés, prise en charge, fermeture, logs.
+- **Présentation d'agents** : formulaire modal (`/agent`) générant un embed professionnel (cas d'usage, intégrations, liens documentation/démo).
 - **Profils membres** : `/profile` (configuration + affichage public).
 - **Commandes utilitaires** : `/ping`, `/help`, `/about`, `/rules`, `/stats`, `/userinfo`, `/serverinfo`, `/members`.
-- **`/reset config`** et **`/reset afrocodeurs`** : réinitialisation contrôlée avec confirmations.
+- **`/reset config`** et **`/reset masteragent`** : réinitialisation contrôlée avec confirmations.
 - Logs applicatifs (fichier + console) et logs Discord dans `#logs` / `#moderation`.
+
+## Structure du serveur créée par `/setup`
+
+**Rôles** : Fondateur, Administrateur, Modérateur, Responsable Communauté, Expert Automatisation, Créateur d'agents, Client Pro, Membre vérifié, Nouveau membre, Bot.
+
+**Catégories** :
+- 📢 INFORMATIONS — annonces, bienvenue, règlement, informations, lien Master Agent
+- 💬 COMMUNAUTÉ — général, présentations, entraide, idées & suggestions, cas d'usage
+- 🤖 AGENTS IA — mes agents, automatisations avancées, expérimentations, tutoriels, outils & intégrations, WhatsApp Business
+- 📚 RESSOURCES — documentation, FAQ, changelog, bonnes pratiques
+- 🎫 SUPPORT — support, bugs & signalements
+- 🔊 VOCAL — discussion, réunion de groupe, réunion privée, pause
+- 🛡️ STAFF — logs, modération, tickets-staff, staff (accès restreint)
 
 ## Architecture
 
 ```
-afrocodeurs/
+masteragent/
 ├── bot.py                  # Point d'entrée
 ├── config.py                # Configuration + blueprint de structure serveur
 ├── requirements.txt
 ├── requirements-dev.txt
 ├── .env.example
 ├── .gitignore
-├── afrocodeurs.service      # Unit systemd
+├── masteragent.service      # Unit systemd
 ├── cogs/                    # Commandes slash & listeners
 │   ├── setup.py
 │   ├── welcome.py
 │   ├── moderation.py
 │   ├── administration.py
 │   ├── tickets.py
-│   ├── projects.py
+│   ├── projects.py           # commande /agent
 │   ├── member.py
 │   ├── staff.py
 │   └── utility.py
@@ -68,7 +81,7 @@ afrocodeurs/
 ├── views/                     # Boutons/menus/formulaires persistants
 │   ├── welcome_view.py
 │   ├── ticket_view.py
-│   ├── project_view.py
+│   ├── project_view.py        # formulaire de présentation d'agent
 │   └── confirmation_view.py
 ├── utils/
 │   ├── permissions.py         # Sécurité hiérarchie des rôles
@@ -90,7 +103,7 @@ afrocodeurs/
 ## Création du bot Discord
 
 1. Rendez-vous sur https://discord.com/developers/applications
-2. Créez une nouvelle application, nommez-la **AfroCodeurs**.
+2. Créez une nouvelle application, nommez-la **Master Agent**.
 3. Dans l'onglet **Bot**, cliquez sur *Add Bot*.
 4. Activez l'intent **SERVER MEMBERS INTENT** (obligatoire pour l'accueil automatique).
 5. Copiez le **token** du bot (bouton *Reset Token* si besoin) — vous en aurez besoin pour `.env`.
@@ -113,8 +126,8 @@ Ou plus simplement, cochez la permission **Administrateur** si votre serveur est
 ## Installation locale
 
 ```bash
-git clone https://github.com/<votre-compte>/AfroCodeurs.git
-cd AfroCodeurs
+git clone https://github.com/<votre-compte>/masteragent-bot.git
+cd masteragent-bot
 python3 -m venv venv
 source venv/bin/activate        # Windows : venv\Scripts\activate
 pip install -r requirements.txt
@@ -130,7 +143,7 @@ DISCORD_TOKEN=votre_token_ici
 OWNER_IDS=
 COMMAND_PREFIX=!
 LOG_LEVEL=INFO
-DATABASE_PATH=afrocodeurs.db
+DATABASE_PATH=masteragent.db
 DEFAULT_WELCOME_ENABLED=true
 DEFAULT_TICKETS_ENABLED=true
 DEFAULT_PROJECTS_ENABLED=true
@@ -160,15 +173,15 @@ Une fois le bot en ligne, exécutez `/setup` sur votre serveur (propriétaire ou
 
 ```bash
 # 1. Connexion au VPS et création d'un utilisateur dédié (recommandé)
-sudo adduser afrocodeurs
-sudo su - afrocodeurs
+sudo adduser masteragent
+sudo su - masteragent
 
 # 2. Installer Python si nécessaire
 sudo apt update && sudo apt install -y python3 python3-venv python3-pip git
 
 # 3. Cloner le projet
-git clone https://github.com/<votre-compte>/AfroCodeurs.git
-cd AfroCodeurs
+git clone https://github.com/<votre-compte>/masteragent-bot.git
+cd masteragent-bot
 
 # 4. Environnement virtuel + dépendances
 python3 -m venv venv
@@ -180,20 +193,20 @@ cp .env.example .env
 nano .env   # renseignez DISCORD_TOKEN et le reste
 
 # 6. Copier le fichier systemd (adapter User/WorkingDirectory si besoin)
-sudo cp afrocodeurs.service /etc/systemd/system/afrocodeurs.service
-sudo nano /etc/systemd/system/afrocodeurs.service   # vérifiez les chemins
+sudo cp masteragent.service /etc/systemd/system/masteragent.service
+sudo nano /etc/systemd/system/masteragent.service   # vérifiez les chemins
 
 # 7. Activer et démarrer
 sudo systemctl daemon-reload
-sudo systemctl enable afrocodeurs
-sudo systemctl start afrocodeurs
+sudo systemctl enable masteragent
+sudo systemctl start masteragent
 
 # 8. Vérifier le statut et les logs
-sudo systemctl status afrocodeurs
-sudo journalctl -u afrocodeurs -f
+sudo systemctl status masteragent
+sudo journalctl -u masteragent -f
 
 # Redémarrer après une mise à jour du code
-sudo systemctl restart afrocodeurs
+sudo systemctl restart masteragent
 ```
 
 ## Liste des commandes
@@ -210,7 +223,7 @@ sudo systemctl restart afrocodeurs
 | `/serverinfo` | Informations sur le serveur |
 | `/members` | Répartition des membres par rôle |
 | `/profile [membre]` | Configurer ou consulter un profil |
-| `/projet` | Présenter un projet (formulaire) |
+| `/agent` | Présenter un agent IA créé sur Master Agent (formulaire) |
 
 ### Modération (staff)
 | Commande | Description |
@@ -233,7 +246,7 @@ sudo systemctl restart afrocodeurs
 | `/role add\|remove\|info\|list` | Gestion des rôles |
 | `/staff list\|add\|remove\|promote\|demote` | Gestion de l'équipe staff |
 | `/reset config` | Réinitialiser la configuration enregistrée |
-| `/reset afrocodeurs` | Réinitialisation complète (double confirmation) |
+| `/reset masteragent` | Réinitialisation complète (double confirmation) |
 
 ## Dépannage
 
@@ -241,7 +254,7 @@ sudo systemctl restart afrocodeurs
 - **"Permissions insuffisantes" lors de `/setup`** : donnez au rôle du bot les permissions listées plus haut, et assurez-vous que son rôle est placé suffisamment haut dans la hiérarchie des rôles du serveur.
 - **Les boutons (règlement, tickets) ne répondent plus après un redémarrage** : vérifiez les logs — les vues persistantes sont ré-enregistrées automatiquement dans `setup_hook()`, mais un plantage avant cette étape peut l'empêcher.
 - **`database is locked`** : le bot utilise déjà `WAL` et un verrou asyncio pour éviter cela ; si le fichier `.db` a été copié pendant que le bot tournait, redémarrez proprement.
-- Consultez toujours `logs/afrocodeurs.log` et `journalctl -u afrocodeurs -f` pour le détail technique des erreurs.
+- Consultez toujours `logs/masteragent.log` et `journalctl -u masteragent -f` pour le détail technique des erreurs.
 
 ## Sécurité
 

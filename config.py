@@ -22,7 +22,7 @@ def _get_bool(name: str, default: bool = False) -> bool:
 
 
 class Settings:
-    """Runtime settings for the AfroCodeurs bot."""
+    """Runtime settings for the Master Agent community bot."""
 
     DISCORD_TOKEN: str = os.getenv("DISCORD_TOKEN", "")
     COMMAND_PREFIX: str = os.getenv("COMMAND_PREFIX", "!")
@@ -30,7 +30,7 @@ class Settings:
         int(x) for x in os.getenv("OWNER_IDS", "").split(",") if x.strip().isdigit()
     ]
     LOG_LEVEL: str = os.getenv("LOG_LEVEL", "INFO")
-    DATABASE_PATH: str = os.getenv("DATABASE_PATH", str(BASE_DIR / "afrocodeurs.db"))
+    DATABASE_PATH: str = os.getenv("DATABASE_PATH", str(BASE_DIR / "masteragent.db"))
     LOG_DIR: Path = BASE_DIR / "logs"
 
     # Feature toggles usable as sane defaults during /setup
@@ -51,6 +51,8 @@ settings = Settings()
 
 # Server structure blueprint used by the /setup command.
 # Kept here (not hardcoded inside cogs) so it can be reviewed/edited in one place.
+# Adapted for the Master Agent community (clients/utilisateurs de la plateforme
+# de création d'agents IA pour l'automatisation WhatsApp).
 SERVER_BLUEPRINT = {
     "roles": [
         # name, color_hex, hoist, mentionable, permissions_admin(bool)
@@ -58,12 +60,12 @@ SERVER_BLUEPRINT = {
         {"name": "🛡️ Administrateur", "color": 0xE67E22, "hoist": True, "mentionable": True, "admin": True},
         {"name": "🔨 Modérateur", "color": 0xF1C40F, "hoist": True, "mentionable": True, "admin": False},
         {"name": "🤝 Responsable Communauté", "color": 0x1ABC9C, "hoist": True, "mentionable": True, "admin": False},
-        {"name": "🎓 Mentor", "color": 0x3498DB, "hoist": True, "mentionable": True, "admin": False},
-        {"name": "💻 VibeCodeur", "color": 0x9B59B6, "hoist": False, "mentionable": False, "admin": False},
-        {"name": "🚀 Entrepreneur", "color": 0x2ECC71, "hoist": False, "mentionable": False, "admin": False},
+        {"name": "🎓 Expert Automatisation", "color": 0x3498DB, "hoist": True, "mentionable": True, "admin": False},
+        {"name": "🤖 Créateur d'agents", "color": 0x9B59B6, "hoist": False, "mentionable": False, "admin": False},
+        {"name": "💼 Client Pro", "color": 0x2ECC71, "hoist": False, "mentionable": False, "admin": False},
         {"name": "⭐ Membre vérifié", "color": 0x95A5A6, "hoist": False, "mentionable": False, "admin": False},
         {"name": "🌱 Nouveau membre", "color": 0x7F8C8D, "hoist": False, "mentionable": False, "admin": False},
-        {"name": "🤖 Bot", "color": 0x34495E, "hoist": True, "mentionable": False, "admin": False},
+        {"name": "⚙️ Bot", "color": 0x34495E, "hoist": True, "mentionable": False, "admin": False},
     ],
     "categories": [
         {
@@ -73,7 +75,7 @@ SERVER_BLUEPRINT = {
                 {"name": "👋・bienvenue", "type": "text", "read_only": True},
                 {"name": "📜・reglement", "type": "text", "read_only": True},
                 {"name": "📌・informations", "type": "text", "read_only": True},
-                {"name": "🔗・afrocodeurs", "type": "text", "read_only": True},
+                {"name": "🔗・masteragent", "type": "text", "read_only": True},
             ],
         },
         {
@@ -82,35 +84,35 @@ SERVER_BLUEPRINT = {
                 {"name": "💬・general", "type": "text"},
                 {"name": "👋・presentations", "type": "text"},
                 {"name": "🤝・entraide", "type": "text"},
-                {"name": "💡・idees", "type": "text"},
-                {"name": "🎯・opportunites", "type": "text"},
+                {"name": "💡・idees-suggestions", "type": "text"},
+                {"name": "🎯・cas-usage", "type": "text"},
             ],
         },
         {
-            "name": "💻 VIBECODING",
+            "name": "🤖 AGENTS IA",
             "channels": [
-                {"name": "🚀・projets", "type": "text"},
-                {"name": "🔥・projets-serieux", "type": "text"},
-                {"name": "🧪・prototypes", "type": "text"},
-                {"name": "🤖・ia-et-vibecoding", "type": "text"},
-                {"name": "🎨・design-ui-ux", "type": "text"},
-                {"name": "🛠️・outils", "type": "text"},
+                {"name": "🚀・mes-agents", "type": "text"},
+                {"name": "🔥・automatisations-avancees", "type": "text"},
+                {"name": "🧪・experimentations", "type": "text"},
+                {"name": "📚・tutoriels", "type": "text"},
+                {"name": "🛠️・outils-integrations", "type": "text"},
+                {"name": "💬・whatsapp-business", "type": "text"},
             ],
         },
         {
-            "name": "🤝 COLLABORATION",
+            "name": "📚 RESSOURCES",
             "channels": [
-                {"name": "📤・presente-ton-projet", "type": "text"},
-                {"name": "👥・recherche-collaborateur", "type": "text"},
-                {"name": "💼・freelance", "type": "text"},
-                {"name": "💰・opportunites-tech", "type": "text"},
+                {"name": "📖・documentation", "type": "text", "read_only": True},
+                {"name": "❓・faq", "type": "text"},
+                {"name": "📰・changelog", "type": "text", "read_only": True},
+                {"name": "💡・bonnes-pratiques", "type": "text"},
             ],
         },
         {
             "name": "🎫 SUPPORT",
             "channels": [
                 {"name": "🎫・support", "type": "text"},
-                {"name": "🚨・signalements", "type": "text"},
+                {"name": "🐛・bugs-signalements", "type": "text"},
             ],
         },
         {

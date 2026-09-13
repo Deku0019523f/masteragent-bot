@@ -1,6 +1,6 @@
 """
 bot.py
-AfroCodeurs — entrypoint. Loads config, sets up logging and the database,
+Master Agent — entrypoint. Loads config, sets up logging and the database,
 loads all cogs, re-registers persistent views, and starts the bot.
 """
 from __future__ import annotations
@@ -31,7 +31,7 @@ INITIAL_EXTENSIONS = [
 logger = setup_logging(settings.LOG_DIR, settings.LOG_LEVEL)
 
 
-class AfroCodeursBot(commands.Bot):
+class MasterAgentBot(commands.Bot):
     def __init__(self):
         intents = discord.Intents.default()
         intents.members = True
@@ -60,7 +60,7 @@ class AfroCodeursBot(commands.Bot):
         logger.info("Connecté en tant que %s (ID: %s)", self.user, self.user.id)
         logger.info("Présent sur %d serveur(s)", len(self.guilds))
         await self.change_presence(
-            activity=discord.Activity(type=discord.ActivityType.watching, name="la communauté AfroCodeurs 🚀")
+            activity=discord.Activity(type=discord.ActivityType.watching, name="la communauté Master Agent 🚀")
         )
 
     async def on_disconnect(self):
@@ -72,7 +72,7 @@ class AfroCodeursBot(commands.Bot):
         await super().close()
 
 
-bot = AfroCodeursBot()
+bot = MasterAgentBot()
 
 
 @bot.tree.error
