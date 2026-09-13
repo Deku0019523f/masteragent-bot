@@ -12,7 +12,7 @@ from discord import app_commands
 from discord.ext import commands
 
 from config import SERVER_BLUEPRINT, settings
-from utils import checks, embeds, permissions
+from utils import checks, embeds, permissions, rules_message
 from views.confirmation_view import ConfirmationView
 
 logger = logging.getLogger("masteragent.cogs.setup")
@@ -174,26 +174,16 @@ class SetupCog(commands.Cog):
         )
         await update_progress("Initialisation de la base de données")
 
-        # 4. Post rules acceptance panel + ticket panel (idempotent — only if not already posted)
-        from views.welcome_view import RulesAcceptView
+        # 4. Post rules acceptance panel + ticket panel
         from views.ticket_view import TicketPanelView
 
         rules_channel = guild.get_channel(rules_channel_id)
         if rules_channel:
-            already_posted = False
-            async for m in rules_channel.history(limit=20):
-                if m.author == guild.me and m.components:
-                    already_posted = True
-                    break
-            if not already_posted:
-                await rules_channel.send(
-                    embed=embeds.info(
-                        "📜 Règlement Master Agent",
-                        "Merci de lire le règlement du serveur. Cliquez ci-dessous pour l'accepter "
-                        "et débloquer l'accès complet à la communauté.",
-                    ),
-                    view=RulesAcceptView(self.bot),
-                )
+            # Réutilise le texte déjà personnalisé via /reglement definir s'il existe,
+            # sinon le règlement par défaut. sync_rules_panel est idempotent : il édite
+            # le panneau déjà posté au lieu d'en reposter un nouveau.
+            rules_text = config["rules_text"] if config and config["rules_text"] else settings.DEFAULT_RULES_TEXT
+            await rules_message.sync_rules_panel(self.bot, guild, rules_channel, rules_text)
 
         support_channel = guild.get_channel(support_channel_id)
         if support_channel:

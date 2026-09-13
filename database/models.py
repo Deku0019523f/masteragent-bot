@@ -27,6 +27,8 @@ SCHEMA_STATEMENTS: list[str] = [
         voice_enabled INTEGER NOT NULL DEFAULT 0,
         warn_timeout_threshold INTEGER NOT NULL DEFAULT 3,
         warn_major_threshold INTEGER NOT NULL DEFAULT 5,
+        rules_text TEXT,
+        welcome_message TEXT,
         created_at TEXT NOT NULL DEFAULT (datetime('now')),
         updated_at TEXT NOT NULL DEFAULT (datetime('now'))
     );

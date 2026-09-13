@@ -16,7 +16,7 @@ Périmètre strict : uniquement le bot Discord et la communauté. Aucune API, au
 - discord.py 2.x (>=2.4.0,<3.0.0)
 - aiosqlite (SQLite async)
 - python-dotenv
-- systemd (déploiement VPS Ubuntu)
+- systemd (déploiement VPS Ubuntu) **et** Render.com (Background Worker, via `Procfile`/`render.yaml`) — deux options de déploiement supportées, ne pas les lancer simultanément avec le même token
 
 ## Architecture et structure des fichiers
 
@@ -82,6 +82,12 @@ masteragent/
   - Tous les textes visibles (bienvenue, /about, /setup, titres d'embeds, footer) mis à jour.
   - Fichier systemd renommé `afrocodeurs.service` → `masteragent.service`.
   - **Bug corrigé pendant le rebranding** : un remplacement global "AfroCodeurs"→"Master Agent" avait cassé un identifiant Python (`class AfroCodeursBot` → `class Master AgentBot`, espace invalide). Corrigé en `MasterAgentBot`. Tous les fichiers ont été recompilés (`py_compile`) après coup pour confirmer qu'aucune autre casse similaire n'était survenue.
+
+- **14/09/2026 — Ajout du support Render.com + nettoyage branding résiduel** :
+  - L'utilisateur a poussé le projet sur GitHub (`Deku0019523f/masteragent-bot`) et ajouté lui-même un `Procfile` et un `render.yaml` (absents du livrable initial) pour déployer en Background Worker sur Render.com, en plus du VPS/systemd.
+  - Revue du dépôt poussé : code identique au livrable (aucune régression), mais `render.yaml` et `.env.example` contenaient encore l'ancien nom `afrocodeurs` (`name: afrocodeurs-bot`, `DATABASE_PATH=afrocodeurs.db`) — corrigé en `masteragent-bot` / `masteragent.db`.
+  - `render.yaml` complété avec un **disque persistant** (`/data`, 1 Go) et `DATABASE_PATH=/data/masteragent.db`, car le système de fichiers de Render est éphémère par défaut — sans ça, la base SQLite (config serveur, warnings, tickets, profils) aurait été perdue à chaque redéploiement.
+  - README : nouvelle section "Déploiement alternatif : Render.com" avec avertissement de ne jamais lancer VPS + Render simultanément avec le même token (double connexion Discord).
 
 ## Problèmes rencontrés et solutions
 

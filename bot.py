@@ -21,6 +21,7 @@ INITIAL_EXTENSIONS = [
     "cogs.welcome",
     "cogs.moderation",
     "cogs.administration",
+    "cogs.customization",
     "cogs.tickets",
     "cogs.projects",
     "cogs.member",

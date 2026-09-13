@@ -10,7 +10,9 @@ import logging
 import discord
 from discord.ext import commands
 
+from config import settings
 from utils import embeds
+from utils.welcome_message import render_welcome_message
 
 logger = logging.getLogger("masteragent.cogs.welcome")
 
@@ -40,15 +42,9 @@ class WelcomeCog(commands.Cog):
         rules_channel = guild.get_channel(config["rules_channel"]) if config["rules_channel"] else None
 
         if welcome_channel:
-            rules_mention = rules_channel.mention if rules_channel else "#reglement"
-            embed = embeds.info(
-                f"Bienvenue {member.display_name} ! 👋",
-                f"Ravi de t'accueillir sur **Master Agent**, {member.mention} !\n\n"
-                f"Pour commencer :\n"
-                f"1️⃣ Lis le règlement dans {rules_mention} et clique sur *J'accepte le règlement*\n"
-                f"2️⃣ Présente-toi dans le salon dédié\n"
-                f"3️⃣ Découvre les salons Agents IA et rejoins la communauté 🚀",
-            )
+            template = config["welcome_message"] or settings.DEFAULT_WELCOME_MESSAGE
+            description = render_welcome_message(template, member, rules_channel)
+            embed = embeds.info(f"Bienvenue {member.display_name} ! 👋", description)
             if member.display_avatar:
                 embed.set_thumbnail(url=member.display_avatar.url)
             try:

@@ -45,7 +45,26 @@ class Database:
                 await self._conn.execute(stmt)
             for stmt in INDEX_STATEMENTS:
                 await self._conn.execute(stmt)
+            await self._migrate_guilds_columns()
             await self._conn.commit()
+
+    async def _migrate_guilds_columns(self) -> None:
+        """Ajoute les colonnes introduites après la première version aux bases
+        déjà existantes (CREATE TABLE IF NOT EXISTS ne modifie pas une table
+        déjà créée). Appelée à l'intérieur de _init_schema, donc déjà sous _lock."""
+        assert self._conn is not None
+        cursor = await self._conn.execute("PRAGMA table_info(guilds);")
+        existing_columns = {row[1] for row in await cursor.fetchall()}
+        await cursor.close()
+
+        new_columns = {
+            "rules_text": "TEXT",
+            "welcome_message": "TEXT",
+        }
+        for name, col_type in new_columns.items():
+            if name not in existing_columns:
+                await self._conn.execute(f"ALTER TABLE guilds ADD COLUMN {name} {col_type};")
+                logger.info("Migration: colonne guilds.%s ajoutée.", name)
 
     # ---------- low-level helpers ----------
 

@@ -83,11 +83,13 @@ class UtilityCog(commands.Cog):
 
         general = [
             "/profile", "/userinfo", "/serverinfo", "/agent", "/ping", "/about", "/rules", "/stats", "/help", "/members",
+            "/reglement voir", "/bienvenue voir",
         ]
         staff_cmds = [
             "/setup", "/config", "/warn", "/warnings", "/clear", "/timeout", "/untimeout",
             "/kick", "/ban", "/unban", "/lock", "/unlock", "/role add|remove|info|list",
             "/staff list|add|remove|promote|demote", "/reset config|masteragent",
+            "/reglement definir|reinitialiser", "/bienvenue definir|reinitialiser",
         ]
 
         description = "**Commandes générales**\n" + " • ".join(general)

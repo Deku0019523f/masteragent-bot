@@ -39,6 +39,27 @@ class Settings:
     DEFAULT_PROJECTS_ENABLED: bool = _get_bool("DEFAULT_PROJECTS_ENABLED", True)
     DEFAULT_VOICE_ENABLED: bool = _get_bool("DEFAULT_VOICE_ENABLED", False)
 
+    # Contenu par défaut, personnalisable par serveur via /reglement et /bienvenue
+    # (stocké en base dans guilds.rules_text / guilds.welcome_message une fois modifié).
+    DEFAULT_RULES_TEXT: str = (
+        "**Bienvenue sur le règlement de Master Agent !**\n\n"
+        "1️⃣ **Respect** — Aucune insulte, harcèlement ou discrimination envers un membre.\n"
+        "2️⃣ **Pas de spam** — Pas de publicité, liens d'affiliation ou démarchage sans autorisation du staff.\n"
+        "3️⃣ **Contenu adapté** — Pas de contenu NSFW, violent ou illégal.\n"
+        "4️⃣ **Bon usage des salons** — Restez dans le sujet de chaque salon.\n"
+        "5️⃣ **Respect du staff** — Les décisions de modération se contestent en ticket, pas publiquement.\n\n"
+        "Le non-respect de ce règlement peut entraîner un avertissement, une exclusion temporaire ou un bannissement.\n\n"
+        "Cliquez sur le bouton ci-dessous pour l'accepter et débloquer l'accès complet au serveur."
+    )
+
+    DEFAULT_WELCOME_MESSAGE: str = (
+        "Ravi de t'accueillir sur **Master Agent**, {member_mention} !\n\n"
+        "Pour commencer :\n"
+        "1️⃣ Lis le règlement dans {rules_channel} et clique sur *J'accepte le règlement*\n"
+        "2️⃣ Présente-toi dans le salon dédié\n"
+        "3️⃣ Découvre les salons Agents IA et rejoins la communauté 🚀"
+    )
+
     @classmethod
     def validate(cls) -> None:
         if not cls.DISCORD_TOKEN:

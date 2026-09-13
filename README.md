@@ -19,6 +19,7 @@ Le bot installe et administre automatiquement la structure complète du serveur 
 - [Invitation du bot](#invitation-du-bot)
 - [Lancement](#lancement)
 - [Déploiement VPS (systemd)](#déploiement-vps-systemd)
+- [Déploiement alternatif : Render.com](#déploiement-alternatif--rendercom)
 - [Liste des commandes](#liste-des-commandes)
 - [Dépannage](#dépannage)
 - [Sécurité](#sécurité)
@@ -31,6 +32,8 @@ Le bot installe et administre automatiquement la structure complète du serveur 
 - **`/setup`** : construit automatiquement rôles, catégories et salons (idempotent — ne duplique jamais, ne supprime jamais un salon existant non géré).
 - **Accueil automatique** : rôle "Nouveau membre", message de bienvenue, parcours vers le règlement.
 - **Règlement à bouton** : acceptation persistante (survit aux redémarrages), attribue "Membre vérifié".
+- **Règlement personnalisable** : `/reglement definir` (modal) pour éditer le texte affiché, `/reglement voir` pour le consulter, `/reglement reinitialiser` pour revenir au texte par défaut. Le panneau du salon règlement est mis à jour automatiquement.
+- **Message de bienvenue personnalisable** : `/bienvenue definir` (modal, variables `{member_mention}` `{member_name}` `{server_name}` `{rules_channel}`), `/bienvenue voir` pour prévisualiser le rendu, `/bienvenue reinitialiser` pour revenir au message par défaut.
 - **Modération complète** : `/warn`, `/warnings`, `/clear`, `/timeout`, `/untimeout`, `/kick`, `/ban`, `/unban`, `/lock`, `/unlock`, avec seuils d'auto-sanction configurables.
 - **Gestion des rôles** sécurisée par hiérarchie (`/role add|remove|info|list`).
 - **Système de staff** : roster, promotions, historique (`/staff ...`).
@@ -209,6 +212,19 @@ sudo journalctl -u masteragent -f
 sudo systemctl restart masteragent
 ```
 
+## Déploiement alternatif : Render.com
+
+Le dépôt inclut un `Procfile` et un `render.yaml` pour un déploiement en tant que **Background Worker** sur Render.com (pas de port HTTP à exposer, le bot tourne en continu).
+
+1. Sur Render, créez un nouveau **Blueprint** à partir de ce dépôt (Render détecte automatiquement `render.yaml`), ou créez un **Worker** manuellement avec :
+   - Build Command : `pip install -r requirements.txt`
+   - Start Command : `python bot.py`
+2. Renseignez la variable d'environnement `DISCORD_TOKEN` dans le dashboard Render (elle n'est jamais dans `render.yaml`, `sync: false` l'exige à la main).
+3. Le `render.yaml` déclare un **disque persistant** monté sur `/data` (1 Go) et `DATABASE_PATH=/data/masteragent.db` : sans ce disque, la base SQLite serait effacée à chaque redéploiement (le système de fichiers de Render est éphémère par défaut).
+4. Déployez — les logs sont visibles dans l'onglet *Logs* du service Render.
+
+⚠️ Un seul processus doit tourner à la fois pour un bot Discord (sinon vous obtiendrez des erreurs de double connexion / duplication de commandes). Ne lancez pas simultanément l'instance VPS (systemd) et l'instance Render avec le même token.
+
 ## Liste des commandes
 
 ### Générales
@@ -224,6 +240,8 @@ sudo systemctl restart masteragent
 | `/members` | Répartition des membres par rôle |
 | `/profile [membre]` | Configurer ou consulter un profil |
 | `/agent` | Présenter un agent IA créé sur Master Agent (formulaire) |
+| `/reglement voir` | Afficher le texte actuel du règlement |
+| `/bienvenue voir` | Prévisualiser le message de bienvenue actuel |
 
 ### Modération (staff)
 | Commande | Description |
@@ -247,6 +265,10 @@ sudo systemctl restart masteragent
 | `/staff list\|add\|remove\|promote\|demote` | Gestion de l'équipe staff |
 | `/reset config` | Réinitialiser la configuration enregistrée |
 | `/reset masteragent` | Réinitialisation complète (double confirmation) |
+| `/reglement definir` | Modifier le texte du règlement (formulaire) |
+| `/reglement reinitialiser` | Revenir au règlement par défaut |
+| `/bienvenue definir` | Modifier le message de bienvenue (formulaire) |
+| `/bienvenue reinitialiser` | Revenir au message de bienvenue par défaut |
 
 ## Dépannage
 
