@@ -126,7 +126,7 @@ Ou plus simplement, cochez la permission **Administrateur** si votre serveur est
 ## Installation locale
 
 ```bash
-git clone https://github.com/<votre-compte>/masteragent-bot.git
+git clone https://github.com/deku0019523f/masteragent-bot.git
 cd masteragent-bot
 python3 -m venv venv
 source venv/bin/activate        # Windows : venv\Scripts\activate
