@@ -54,8 +54,17 @@ class MasterAgentBot(commands.Bot):
         from views.welcome_view import RulesAcceptView
         self.add_view(RulesAcceptView(self))
 
-        synced = await self.tree.sync()
-        logger.info("Commandes synchronisées: %d", len(synced))
+        try:
+            synced = await self.tree.sync()
+            logger.info("Commandes synchronisées: %d", len(synced))
+        except discord.HTTPException:
+            # Un raté ici (rate limit, hoquet réseau côté Discord) ne doit pas tuer
+            # tout le process : les commandes déjà enregistrées côté Discord restent
+            # fonctionnelles même sans nouvelle synchronisation.
+            logger.exception(
+                "Échec de la synchronisation des commandes (tree.sync) — le bot démarre "
+                "quand même avec les commandes déjà enregistrées côté Discord."
+            )
 
     async def on_ready(self):
         logger.info("Connecté en tant que %s (ID: %s)", self.user, self.user.id)

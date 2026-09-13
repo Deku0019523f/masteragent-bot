@@ -119,6 +119,7 @@ class SetupCog(commands.Cog):
                 if chan_obj is None:
                     chan_obj = discord.utils.get(category_obj.channels, name=self._safe_name(chan_def))
 
+                topic = chan_def.get("topic", "")
                 if chan_obj is None:
                     overwrites = self._build_channel_overwrites(guild, chan_def, staff_role_ids, everyone)
                     if chan_def["type"] == "voice":
@@ -129,8 +130,15 @@ class SetupCog(commands.Cog):
                     else:
                         chan_obj = await guild.create_text_channel(
                             chan_def["name"], category=category_obj, overwrites=overwrites,
-                            reason="Master Agent /setup",
+                            topic=topic, reason="Master Agent /setup",
                         )
+                elif isinstance(chan_obj, discord.TextChannel) and topic and chan_obj.topic != topic:
+                    # Salon déjà existant (serveur déjà configuré) : on applique la
+                    # description manquante ou obsolète sans toucher au reste du salon.
+                    try:
+                        await chan_obj.edit(topic=topic, reason="Master Agent /setup — mise à jour de la description")
+                    except discord.Forbidden:
+                        logger.warning("Permissions insuffisantes pour définir la description de %s", chan_obj.name)
                 await db.save_resource(guild.id, "channel", chan_def["name"], chan_obj.id)
 
                 if chan_def["name"] == "👋・bienvenue":
