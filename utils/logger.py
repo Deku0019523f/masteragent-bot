@@ -13,7 +13,7 @@ from pathlib import Path
 def setup_logging(log_dir: Path, level: str = "INFO") -> logging.Logger:
     log_dir.mkdir(parents=True, exist_ok=True)
 
-    logger = logging.getLogger("afrocodeurs")
+    logger = logging.getLogger("masteragent")
     logger.setLevel(level.upper())
     logger.handlers.clear()
 
@@ -27,7 +27,7 @@ def setup_logging(log_dir: Path, level: str = "INFO") -> logging.Logger:
     logger.addHandler(console_handler)
 
     file_handler = RotatingFileHandler(
-        log_dir / "afrocodeurs.log", maxBytes=5_000_000, backupCount=5, encoding="utf-8"
+        log_dir / "masteragent.log", maxBytes=5_000_000, backupCount=5, encoding="utf-8"
     )
     file_handler.setFormatter(fmt)
     logger.addHandler(file_handler)

@@ -16,7 +16,7 @@ COLOR_DANGER = 0xE74C3C
 COLOR_INFO = 0x3498DB
 COLOR_STAFF = 0x9B59B6
 
-FOOTER_TEXT = "AfroCodeurs • Communauté VibeCoding"
+FOOTER_TEXT = "Master Agent • Agents IA pour WhatsApp"
 
 
 def _base(title: str, description: str = "", color: int = COLOR_PRIMARY) -> discord.Embed:
@@ -63,18 +63,19 @@ def project_embed(
     name: str,
     description: str,
     technologies: str,
-    github_link: str,
+    doc_link: str,
     demo_link: str,
-    seeking_collaborators: bool,
+    seeking_feedback: bool,
 ) -> discord.Embed:
-    embed = _base(f"🚀 {name}", description, COLOR_PRIMARY)
+    """Embed de présentation d'un agent IA créé sur Master Agent."""
+    embed = _base(f"🤖 {name}", description, COLOR_PRIMARY)
     if technologies:
-        embed.add_field(name="🛠️ Technologies", value=technologies, inline=False)
-    if seeking_collaborators:
-        embed.add_field(name="👥 Collaboration", value="Recherche de collaborateurs", inline=False)
+        embed.add_field(name="🛠️ Intégrations", value=technologies, inline=False)
+    if seeking_feedback:
+        embed.add_field(name="💬 Retours", value="Ouvert aux retours de la communauté", inline=False)
     links = []
-    if github_link:
-        links.append(f"[GitHub]({github_link})")
+    if doc_link:
+        links.append(f"[Documentation]({doc_link})")
     if demo_link:
         links.append(f"[Démo]({demo_link})")
     if links:
