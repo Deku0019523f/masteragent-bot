@@ -1,6 +1,6 @@
 """
 cogs/setup.py
-/setup — builds (idempotently) the full AfroCodeurs server structure:
+/setup — builds (idempotently) the full Master Agent server structure:
 roles, categories, channels, and permissions. Also /reset for controlled teardown.
 """
 from __future__ import annotations
@@ -15,7 +15,7 @@ from config import SERVER_BLUEPRINT, settings
 from utils import checks, embeds, permissions
 from views.confirmation_view import ConfirmationView
 
-logger = logging.getLogger("afrocodeurs.cogs.setup")
+logger = logging.getLogger("masteragent.cogs.setup")
 
 
 class SetupCog(commands.Cog):
@@ -26,7 +26,7 @@ class SetupCog(commands.Cog):
     # /setup
     # ---------------------------------------------------------------
 
-    @app_commands.command(name="setup", description="Installe automatiquement la structure du serveur AfroCodeurs.")
+    @app_commands.command(name="setup", description="Installe automatiquement la structure du serveur Master Agent.")
     @checks.is_owner_or_admin()
     @app_commands.guild_only()
     async def setup_cmd(self, interaction: discord.Interaction):
@@ -49,13 +49,13 @@ class SetupCog(commands.Cog):
 
         progress_lines: list[str] = []
         msg = await interaction.followup.send(
-            embed=embeds.info("🔧 Installation AfroCodeurs", "Démarrage de l'installation..."),
+            embed=embeds.info("🔧 Installation Master Agent", "Démarrage de l'installation..."),
             ephemeral=True,
         )
 
         async def update_progress(line: str):
             progress_lines.append(f"✅ {line}")
-            await msg.edit(embed=embeds.info("🔧 Installation AfroCodeurs", "\n".join(progress_lines)))
+            await msg.edit(embed=embeds.info("🔧 Installation Master Agent", "\n".join(progress_lines)))
 
         # 1. Roles
         role_map: dict[str, discord.Role] = {}
@@ -72,7 +72,7 @@ class SetupCog(commands.Cog):
                     hoist=role_def["hoist"],
                     mentionable=role_def["mentionable"],
                     permissions=perms,
-                    reason="AfroCodeurs /setup",
+                    reason="Master Agent /setup",
                 )
             await db.save_resource(guild.id, "role", role_def["name"], role_obj.id)
             role_map[role_def["name"]] = role_obj
@@ -82,7 +82,7 @@ class SetupCog(commands.Cog):
         # Ensure bot's own top role sits above roles it must manage (best-effort notice only;
         # Discord doesn't let a bot move its own top role above others automatically).
         bot_role = guild.me.top_role
-        unmanageable = [r for r in role_map.values() if r >= bot_role and r.name != "🤖 Bot"]
+        unmanageable = [r for r in role_map.values() if r >= bot_role and r.name != "⚙️ Bot"]
         if unmanageable:
             logger.warning(
                 "Le rôle du bot est trop bas pour gérer: %s", [r.name for r in unmanageable]
@@ -107,7 +107,7 @@ class SetupCog(commands.Cog):
                     for rid in staff_role_ids:
                         overwrites[guild.get_role(rid)] = discord.PermissionOverwrite(view_channel=True)
                 category_obj = await guild.create_category(
-                    cat_def["name"], overwrites=overwrites, reason="AfroCodeurs /setup"
+                    cat_def["name"], overwrites=overwrites, reason="Master Agent /setup"
                 )
             await db.save_resource(guild.id, "category", cat_def["name"], category_obj.id)
             if cat_def["name"] == "🛡️ STAFF":
@@ -124,12 +124,12 @@ class SetupCog(commands.Cog):
                     if chan_def["type"] == "voice":
                         chan_obj = await guild.create_voice_channel(
                             chan_def["name"], category=category_obj, overwrites=overwrites,
-                            reason="AfroCodeurs /setup",
+                            reason="Master Agent /setup",
                         )
                     else:
                         chan_obj = await guild.create_text_channel(
                             chan_def["name"], category=category_obj, overwrites=overwrites,
-                            reason="AfroCodeurs /setup",
+                            reason="Master Agent /setup",
                         )
                 await db.save_resource(guild.id, "channel", chan_def["name"], chan_obj.id)
 
@@ -166,7 +166,7 @@ class SetupCog(commands.Cog):
             admin_role=role_map["🛡️ Administrateur"].id,
             moderator_role=role_map["🔨 Modérateur"].id,
             founder_role=role_map["👑 Fondateur"].id,
-            bot_role=role_map["🤖 Bot"].id,
+            bot_role=role_map["⚙️ Bot"].id,
             welcome_enabled=int(settings.DEFAULT_WELCOME_ENABLED),
             tickets_enabled=int(settings.DEFAULT_TICKETS_ENABLED),
             projects_enabled=int(settings.DEFAULT_PROJECTS_ENABLED),
@@ -188,7 +188,7 @@ class SetupCog(commands.Cog):
             if not already_posted:
                 await rules_channel.send(
                     embed=embeds.info(
-                        "📜 Règlement AfroCodeurs",
+                        "📜 Règlement Master Agent",
                         "Merci de lire le règlement du serveur. Cliquez ci-dessous pour l'accepter "
                         "et débloquer l'accès complet à la communauté.",
                     ),
@@ -205,7 +205,7 @@ class SetupCog(commands.Cog):
             if not already_posted:
                 await support_channel.send(
                     embed=embeds.info(
-                        "🎫 Support AfroCodeurs",
+                        "🎫 Support Master Agent",
                         "Besoin d'aide, envie de collaborer, ou de signaler un problème ? "
                         "Cliquez ci-dessous pour ouvrir un ticket privé avec le staff.",
                     ),
@@ -214,7 +214,7 @@ class SetupCog(commands.Cog):
 
         final_embed = embeds.success(
             "Installation terminée",
-            "🎉 Le serveur AfroCodeurs est configuré !\n\n" + "\n".join(progress_lines),
+            "🎉 Le serveur Master Agent est configuré !\n\n" + "\n".join(progress_lines),
         )
         await msg.edit(embed=final_embed)
 
@@ -241,7 +241,7 @@ class SetupCog(commands.Cog):
     # /reset
     # ---------------------------------------------------------------
 
-    reset_group = app_commands.Group(name="reset", description="Réinitialise la configuration AfroCodeurs.")
+    reset_group = app_commands.Group(name="reset", description="Réinitialise la configuration Master Agent.")
 
     @reset_group.command(name="config", description="Réinitialise uniquement la configuration enregistrée (pas les salons).")
     @checks.is_owner_or_admin()
@@ -269,15 +269,15 @@ class SetupCog(commands.Cog):
             embed=embeds.success("Configuration réinitialisée", "Vous pouvez relancer /setup."), view=None
         )
 
-    @reset_group.command(name="afrocodeurs", description="⚠️ Réinitialisation complète (destructeur, confirmations multiples).")
+    @reset_group.command(name="masteragent", description="⚠️ Réinitialisation complète (destructeur, confirmations multiples).")
     @checks.is_owner_or_admin()
-    async def reset_afrocodeurs(self, interaction: discord.Interaction):
+    async def reset_masteragent(self, interaction: discord.Interaction):
         view1 = ConfirmationView(author_id=interaction.user.id)
         await interaction.response.send_message(
             embed=embeds.error(
                 "⚠️ RÉINITIALISATION COMPLÈTE",
-                "Ceci va supprimer TOUTES les données AfroCodeurs enregistrées pour ce serveur "
-                "(config, tickets, warnings, projets...). Les salons/rôles Discord créés par le bot "
+                "Ceci va supprimer TOUTES les données Master Agent enregistrées pour ce serveur "
+                "(config, tickets, warnings, agents...). Les salons/rôles Discord créés par le bot "
                 "ne seront PAS supprimés automatiquement — vous devrez le faire manuellement si besoin.\n\n"
                 "**Cette action est irréversible.** Confirmez une première fois pour continuer.",
             ),

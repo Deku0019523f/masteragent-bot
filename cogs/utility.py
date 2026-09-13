@@ -28,13 +28,15 @@ class UtilityCog(commands.Cog):
         latency_ms = round(self.bot.latency * 1000)
         await interaction.response.send_message(embed=embeds.info("🏓 Pong !", f"Latence : `{latency_ms}ms`"))
 
-    @app_commands.command(name="about", description="À propos du bot AfroCodeurs.")
+    @app_commands.command(name="about", description="À propos du bot Master Agent.")
     async def about(self, interaction: discord.Interaction):
         embed = embeds.info(
-            "🤖 AfroCodeurs",
-            "Communauté africaine dédiée au Vibe Coding, à l'IA, au développement et aux projets numériques.\n\n"
+            "🤖 Master Agent",
+            "Communauté officielle de **Master Agent**, la plateforme de création d'agents IA "
+            "pour l'automatisation WhatsApp. Échangez avec d'autres créateurs d'agents, partagez vos "
+            "cas d'usage et obtenez de l'aide.\n\n"
             "Ce bot administre automatiquement la structure du serveur, la modération, les tickets, "
-            "les profils et les présentations de projets.",
+            "les profils et les présentations d'agents.",
         )
         embed.add_field(name="Serveurs", value=str(len(self.bot.guilds)), inline=True)
         embed.add_field(name="Latence", value=f"{round(self.bot.latency*1000)}ms", inline=True)
@@ -49,7 +51,7 @@ class UtilityCog(commands.Cog):
         else:
             await interaction.response.send_message("⚠️ Le salon règlement n'est pas encore configuré.", ephemeral=True)
 
-    @app_commands.command(name="stats", description="Statistiques du serveur AfroCodeurs.")
+    @app_commands.command(name="stats", description="Statistiques du serveur Master Agent.")
     async def stats(self, interaction: discord.Interaction):
         db = self.bot.db
         guild_id = interaction.guild.id
@@ -58,7 +60,7 @@ class UtilityCog(commands.Cog):
         warnings_total = await db.fetchall("SELECT id FROM warnings WHERE guild_id=?", (guild_id,))
 
         embed = embeds.info(
-            "📊 Statistiques AfroCodeurs",
+            "📊 Statistiques Master Agent",
             f"Membres : {interaction.guild.member_count}\n"
             f"Tickets ouverts : {len(tickets_open)}\n"
             f"Projets partagés : {len(projects)}\n"
@@ -80,19 +82,19 @@ class UtilityCog(commands.Cog):
                     is_staff = any(r.id in staff_ids for r in member.roles)
 
         general = [
-            "/profile", "/userinfo", "/serverinfo", "/projet", "/ping", "/about", "/rules", "/stats", "/help", "/members",
+            "/profile", "/userinfo", "/serverinfo", "/agent", "/ping", "/about", "/rules", "/stats", "/help", "/members",
         ]
         staff_cmds = [
             "/setup", "/config", "/warn", "/warnings", "/clear", "/timeout", "/untimeout",
             "/kick", "/ban", "/unban", "/lock", "/unlock", "/role add|remove|info|list",
-            "/staff list|add|remove|promote|demote", "/reset config|afrocodeurs",
+            "/staff list|add|remove|promote|demote", "/reset config|masteragent",
         ]
 
         description = "**Commandes générales**\n" + " • ".join(general)
         if is_staff:
             description += "\n\n**Commandes staff**\n" + " • ".join(staff_cmds)
 
-        await interaction.response.send_message(embed=embeds.info("📖 Aide AfroCodeurs", description), ephemeral=True)
+        await interaction.response.send_message(embed=embeds.info("📖 Aide Master Agent", description), ephemeral=True)
 
 
 async def setup(bot: commands.Bot):

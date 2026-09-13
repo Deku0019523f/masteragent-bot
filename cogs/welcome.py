@@ -12,7 +12,7 @@ from discord.ext import commands
 
 from utils import embeds
 
-logger = logging.getLogger("afrocodeurs.cogs.welcome")
+logger = logging.getLogger("masteragent.cogs.welcome")
 
 
 class WelcomeCog(commands.Cog):
@@ -43,11 +43,11 @@ class WelcomeCog(commands.Cog):
             rules_mention = rules_channel.mention if rules_channel else "#reglement"
             embed = embeds.info(
                 f"Bienvenue {member.display_name} ! 👋",
-                f"Ravi de t'accueillir sur **AfroCodeurs**, {member.mention} !\n\n"
+                f"Ravi de t'accueillir sur **Master Agent**, {member.mention} !\n\n"
                 f"Pour commencer :\n"
                 f"1️⃣ Lis le règlement dans {rules_mention} et clique sur *J'accepte le règlement*\n"
                 f"2️⃣ Présente-toi dans le salon dédié\n"
-                f"3️⃣ Explore les salons VibeCoding et rejoins la communauté 🚀",
+                f"3️⃣ Découvre les salons Agents IA et rejoins la communauté 🚀",
             )
             if member.display_avatar:
                 embed.set_thumbnail(url=member.display_avatar.url)

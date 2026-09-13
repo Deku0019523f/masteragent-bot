@@ -76,11 +76,11 @@ class AdministrationCog(commands.Cog):
 
     # ---------------- /config ----------------
 
-    @app_commands.command(name="config", description="Afficher ou modifier la configuration AfroCodeurs.")
+    @app_commands.command(name="config", description="Afficher ou modifier la configuration Master Agent.")
     @app_commands.describe(
         welcome_enabled="Activer/désactiver le système d'accueil",
         tickets_enabled="Activer/désactiver les tickets",
-        projects_enabled="Activer/désactiver le système de projets",
+        projects_enabled="Activer/désactiver la présentation d'agents (/agent)",
         voice_enabled="Activer/désactiver les salons vocaux temporaires",
     )
     @checks.is_owner_or_admin()
@@ -113,7 +113,7 @@ class AdministrationCog(commands.Cog):
             )
 
         embed = embeds.info(
-            "⚙️ Configuration AfroCodeurs",
+            "⚙️ Configuration Master Agent",
             f"Statut setup : `{config['setup_status']}`\n"
             f"Accueil : {'✅' if config['welcome_enabled'] else '❌'}\n"
             f"Tickets : {'✅' if config['tickets_enabled'] else '❌'}\n"
